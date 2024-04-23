@@ -1,0 +1,67 @@
+﻿@model List<Employees>
+
+<h2>Employee List</h2>
+
+<div class="TopSecondBar d-flex flex-row-reverse">
+
+     <a asp-action="AddEmployee" class="btn btn-primary mr-1 float-right">Add Employee</a>          
+
+</div>
+
+<div class="card-content">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="users-list-datatable" class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Birth Date</th>
+                        <th>Graduation</th>
+                        <th>Employment Type</th>
+                        <th>Salary</th>
+                        <th>Assurance</th>
+                        <th>D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in Model)
+                    {
+                        <tr>
+                            <td><a asp-controller="Home" asp-action="EditEmployee" asp-route-name="@employee.Name">@employee.Name</a></td>
+                            <td>@employee.Address</td>
+                            <td>@employee.BirthDate.ToShortDateString()</td>
+                            <td>@employee.Graduation</td>
+                            <td>@employee.EmploymentType</td>
+                            <td>@employee.Salary</td>
+                            <td>@employee.Assurance</td>
+                            <td>
+                                <button class="btn btn-danger" onclick="deleteEmployee('@employee.Name')">Delete</button>
+                            </td>
+                          
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteEmployee(name) {
+        if (confirm('Are you sure you want to delete this employee?')) {
+            $.ajax({
+                url: '@Url.Action("DeleteEmployee", "Home")',
+                type: 'POST',
+                data: { name: name },
+                success: function(response) {
+                    $('#employee-' + name).remove();
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Error deleting employee: ' + error);
+                }
+            });
+        }
+    }
+</script>
